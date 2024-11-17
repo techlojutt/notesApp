@@ -1,26 +1,60 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './noteEditor.css';
-import { useDispatch } from 'react-redux';
-import { addNote } from '../../store/slices/notesSlice';
+import { useDispatch,useSelector } from 'react-redux';
+import { addNote,updateNote,resetDocId } from '../../store/slices/notesSlice';
 
 
 export default function NoteEditor () {
+    const docId = useSelector((store)=>store.notesSlice.docId);
     const dispatch = useDispatch()
      const [title,setTitle] = useState('');
      const [content,setContent] = useState('')
+     
+
+     useEffect(()=>{
+       
+       if(docId){
+            setTitle(docId.title);
+            setContent(docId.content);
+       }
+       else{
+           setTitle('');
+           setContent('');
+       }
+
+     },[docId]);
+      
 
     const handleAddNoteClick =()=>{
-        let note = {
-            title,
-            content,
-            createAt: new Date(),
-        }
-        console.log(note)
-        dispatch(addNote(note))
+   
+          if(docId) {
+             let updatedNote = {
+                id: docId.id,
+                title,
+                content,
+                updateAt: new Date(),
+             }
+             dispatch(updateNote(updatedNote))
+           }
+
+           else {
+            let note = {
+                title,
+                content,
+                createAt: new Date(),
+            }
+            dispatch(addNote(note))
+          }
+
+          setTitle('');
+          setContent('');
+          dispatch(resetDocId())
+
+          }
+          
         
-    };
 
 
     let styles = {
@@ -41,7 +75,7 @@ export default function NoteEditor () {
       <input style={{width:'100%',margin:'20px auto',height:'5vh',border:'1px solid #CCCCCC',outline:'none'}} value={title} type="text" placeholder='Write your note title here...' onChange={(e)=>setTitle(e.target.value)} />
       <ReactQuill  value={content} onChange={setContent} theme="snow" placeholder="Write your note here..." />
       <div className='button-container'>
-      <button  type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" onClick={handleAddNoteClick}>Add Note</button>
+      <button  type="button" className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" onClick={handleAddNoteClick}>{docId?'Update Note':'Add Note'}</button>
       </div>
     </div>
   )

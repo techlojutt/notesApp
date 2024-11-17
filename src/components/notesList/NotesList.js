@@ -1,6 +1,8 @@
 import React ,{useEffect}from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getNotes,deleteNote } from '../../store/slices/notesSlice';
+import { updateDocId } from '../../store/slices/notesSlice';
+import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill'; // Import Quill component
 import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 
@@ -8,7 +10,7 @@ export default function NotesList(){
     const notes = useSelector(store => store.notesSlice.notes);
     console.log(notes,'notes')
     const dispatch = useDispatch();
-
+    const navigate = useNavigate();
 
     useEffect(() =>{ 
         dispatch(getNotes());
@@ -19,6 +21,13 @@ export default function NotesList(){
            dispatch(deleteNote(id))
     }
 
+    const onClickUpdateHandler = (id)=>{
+            
+        dispatch(updateDocId(id))
+        navigate('/note-editor')
+           
+    }
+
      return(
         <div className=' grid grid-cols-3 gap-7' style={{margin:'0 1rem'}} >
         
@@ -26,7 +35,8 @@ export default function NotesList(){
             notes?.map((note)=>{
                 return(
                    
-                    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " style={{boxShadow: 'rgba(0, 0, 0, 0.24) 0px 3px 8px',width:'40rem',height:'50vh',}}>
+                    <div className="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 " 
+                    style={{boxShadow: 'rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px',width:'40rem',height:'20rem'}}>
                         <a href="#">
                             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{note.title}</h5>
                         </a>
@@ -40,7 +50,8 @@ export default function NotesList(){
                             </svg>
                         </a>
                         <div style={{display:'flex',alignItems:'center',justifyContent:'center',marginTop:'2rem'}}>
-                        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" >Edit</button>
+                        <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" 
+                        onClick={()=>onClickUpdateHandler(note.id)}>Edit</button>
                         <button type="button" class="focus:outline-none text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onClick={()=>onClickDelete(note.id)} >Delete</button>
                         </div>
                     </div>

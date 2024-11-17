@@ -16,6 +16,8 @@ import SharedNotes from './pages/sharedNotes/SharedNotes';
 import Categories from './pages/categories/Categories';
 import RecentActivity from './pages/recentActivity/RecentActivity';
 import NoteEditor from './components/noteEditor/NoteEditor';
+import SignUp from './pages/signup/SignUp';
+import Login from './pages/login/Login';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
       }
     ],
   },
+  {
+    path: "/signup",
+    element: <SignUp/>,
+  },
+  {
+    path: "/login",
+    element: <Login/>,
+  }
 ]);
 
 
